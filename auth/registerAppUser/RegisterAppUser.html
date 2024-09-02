@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-6xl p-0 bg-white rounded-lg shadow-lg">
+      <div class="flex flex-col md:flex-row">
+          <!-- Image Section -->
+          <div class="hidden md:block md:w-1/2">
+              <img src="/assets/images/appUserSignUp.png" alt="Registration" class="object-cover w-full h-full rounded-l-lg" />
+          </div>
+
+          <!-- Form Section -->
+          <div class="w-full p-8 md:w-1/2">
+              <h2 class="mb-8 text-3xl font-bold text-center text-gray-800">
+                App User Registration 
+              </h2>
+              <form id="registrationForm" class="space-y-6">
+                  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                      <!-- Form fields -->
+                      <div>
+                          <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                          <input type="text" id="name" name="name"
+                              class="block w-full mt-1 p-2.5 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required />
+                      </div>
+
+                      <div>
+                          <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+                          <input type="text" id="fullName" name="fullName"
+                              class="block w-full mt-1 p-2.5 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required />
+                      </div>
+                      <div>
+                          <label for="birthOfDate" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+                          <input type="date" id="birthOfDate" name="birthOfDate"
+                              class="block w-full mt-1 p-2.5 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required />
+                      </div>
+                      <div>
+                          <label for="addressNo" class="block text-sm font-medium text-gray-700">Address No</label>
+                          <input type="text" id="addressNo" name="addressNo"
+                              class="block w-full mt-1 p-2.5 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required />
+                      </div>
+                      <div>
+                          <label for="addressStreet" class="block text-sm font-medium text-gray-700">Street</label>
+                          <input type="text" id="addressStreet" name="addressStreet"
+                              class="block w-full mt-1 p-2.5 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required />
+                      </div>
+                      <div>
+                          <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+                          <input type="text" id="city" name="city"
+                              class="block w-full mt-1 p-2.5 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required />
+                      </div>
+                      <div>
+                          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                          <input type="password" id="password" name="password"
+                              class="block w-full mt-1 p-2.5 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required />
+                      </div>
+                      <div>
+                          <label for="postalCode" class="block text-sm font-medium text-gray-700">Postal Code</label>
+                          <input type="text" id="postalCode" name="postalCode"
+                              class="block w-full mt-1 p-2.5 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required />
+                      </div>
+                  </div>
+                  <div class="flex justify-end">
+                      <div class="flex m-2">
+                          <button type="reset"
+                              class="px-6 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                              Clear
+                          </button>
+                      </div>
+                      <div class="flex m-2">
+                          <button type="submit"
+                              class="px-6 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                              Register
+                          </button>
+                      </div>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+
+    <script>
+      document.getElementById("registrationForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const username = localStorage.getItem("username");
+        const name = document.getElementById("name").value;
+        const full_name = document.getElementById("fullName").value;
+        const birth_of_date = document.getElementById("birthOfDate").value;
+        const address_no = document.getElementById("addressNo").value;
+        const address_street = document.getElementById("addressStreet").value;
+        const city = document.getElementById("city").value;
+        const password = document.getElementById("password").value;
+        const postalCode = document.getElementById("postalCode").value;
+
+        const payload = {
+          username,
+          name,
+          full_name,
+          birth_of_date,
+          address_no,
+          address_street,
+          city,
+          password,
+          postalCode,
+          role_type: "ROLE_APP_USER",
+        };
+
+        try {
+          const response = await fetch("http://localhost:8082/user/app-user/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.message}`);
+          }
+
+          const responseData = await response.json();
+          console.log("Response Data:", responseData);
+
+          if (responseData && responseData.data && responseData.data.token && responseData.data.refresh_token && responseData.data.user) {
+            localStorage.setItem("token", responseData.data.token);
+            localStorage.setItem("refresh_token", responseData.data.refresh_token);
+            localStorage.setItem("fullName", responseData.data.user.full_name);
+            localStorage.setItem("city", responseData.data.user.city);
+            localStorage.setItem("email", responseData.data.user.email);
+            localStorage.setItem("status", responseData.data.user.status);
+            localStorage.setItem("user_id", responseData.data.user.user_id);
+
+            alert("User registered successfully!");
+            window.location.href = "/AppUserDashboard/appUserHome.html";
+          } else {
+            alert("Unexpected response structure. Check the console for details.");
+            console.error("Received Response:", responseData);
+          }
+        } catch (error) {
+          alert("A network error occurred: " + error.message);
+        }
+      });
+    </script>
+  </body>
+</html>
