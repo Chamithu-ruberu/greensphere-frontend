@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App User Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        font-family: sans-serif;
+        background-color: #f7fafc; /* Tailwind's gray-100 */
+      }
+      .content {
+        flex: 1;
+      }
+      .navbar {
+        background-color: #1a202c; /* Tailwind's gray-800 */
+      }
+      .footer {
+        background-color: #1a202c; /* Tailwind's gray-800 */
+        color: #e2e8f0; /* Tailwind's gray-200 */
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav
+      class="flex flex-wrap items-center justify-between p-4 bg-white shadow-md navbar fixed-top"
+    >
+      <div class="flex items-center">
+        <a href="/AppUserDashboard/appUserHome.html">
+          <img
+            src="/AppUserDashboard/images/gs-logo-2.png"
+            class="h-14"
+            alt="logo"
+          />
+        </a>
+        <a href="/AppUserDashboard/appUserHome.html" class="md:hidden">
+          <img src="/assets/images/logo.png" class="h-12" alt="logo" />
+        </a>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div class="relative">
+          <button
+            class="relative p-2"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="text-gray-500 ti-email"></i>
+          </button>
+          <div
+            class="absolute right-0 hidden w-64 mt-2 bg-white border border-gray-200 rounded shadow-lg"
+          >
+            <div class="p-2 font-bold">Messages</div>
+            <a href="#" class="block p-2 hover:bg-gray-100">
+              <div class="flex items-center space-x-2">
+                <img
+                  src="images/faces/face4.jpg"
+                  class="w-8 h-8 rounded-full"
+                  alt="profile"
+                />
+                <div>
+                  <div class="font-semibold">David Grey</div>
+                  <div class="text-sm text-gray-500">
+                    The meeting is cancelled
+                  </div>
+                </div>
+              </div>
+            </a>
+            <!-- More items -->
+          </div>
+        </div>
+        <div class="relative">
+          <button
+            class="relative p-2"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="text-gray-500 ti-bell"></i>
+          </button>
+          <div
+            class="absolute right-0 hidden w-64 mt-2 bg-white border border-gray-200 rounded shadow-lg"
+          >
+            <div class="p-2 font-bold">Notifications</div>
+            <a href="#" class="block p-2 hover:bg-gray-100">
+              <div class="flex items-center space-x-2">
+                <div
+                  class="flex items-center justify-center w-8 h-8 text-white rounded-full bg-success"
+                >
+                  <i class="ti-info-alt"></i>
+                </div>
+                <div>
+                  <div class="font-semibold">Application Error</div>
+                  <div class="text-sm text-gray-500">Just now</div>
+                </div>
+              </div>
+            </a>
+            <!-- More items -->
+          </div>
+        </div>
+        <div class="relative">
+          <button
+            class="relative p-2"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <img
+              src="images/faces/face28.jpg"
+              class="w-8 h-8 rounded-full"
+              alt="profile"
+            />
+          </button>
+          <div
+            class="absolute right-0 hidden w-64 mt-2 bg-white border border-gray-200 rounded shadow-lg"
+          >
+            <a href="#" class="block p-2 hover:bg-gray-100">
+              <i class="ti-settings text-primary"></i> Settings
+            </a>
+            <a href="php-files/logout.php" class="block p-2 hover:bg-gray-100">
+              <i class="ti-power-off text-primary"></i> Logout
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container flex-1 p-5 mx-auto">
+      <h1 class="mb-6 text-3xl">Settings</h1>
+      <div class="flex">
+        <div class="w-full md:w-1/3 lg:w-1/4">
+          <div class="bg-white border border-gray-200 rounded shadow-md">
+            <div class="p-3 bg-white border-b border-gray-200">
+              <h5 class="text-lg font-semibold">Profile Settings</h5>
+            </div>
+            <div class="list-group list-group-flush">
+              <a
+                id="accountLink"
+                class="block px-4 py-2 text-blue-600 bg-blue-100 border-b border-gray-200 cursor-pointer"
+              >
+                Account
+              </a>
+              <a
+                id="passwordLink"
+                class="block px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+              >
+                Change Password
+              </a>
+              <a
+                id="privacyLink"
+                class="block px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+              >
+                Privacy and safety
+              </a>
+              <a
+                id="emailLink"
+                class="block px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+              >
+                Email notifications
+              </a>
+              <a
+                id="webLink"
+                class="block px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+              >
+                Web notifications
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="w-full pl-5 md:w-2/3 lg:w-3/4">
+          <div id="contentSection" class="tab-content">
+            <!-- Content for each section will be injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="p-4 mt-4 text-sm text-center footer">
+      <p>&copy; 2024 Government Dashboard. All rights reserved.</p>
+    </footer>
+
+    <script>
+      const contentSection = document.getElementById("contentSection");
+
+      const accountContent = `
+    <div class="p-10 mb-4 bg-white border border-gray-200 rounded shadow-md">
+      <div class="flex items-center justify-between p-3 bg-white border-b border-gray-200">
+        <h5 class="text-lg font-semibold">AppUser Info</h5>
+      </div>
+      <div class="p-4">
+        <form>
+          <div class="flex flex-wrap mb-4">
+            <div class="w-full md:w-2/3">
+              <div class="mb-4">
+                <label for="inputFullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+                <input type="text" class="block w-full p-2 mt-1 border border-gray-300 rounded" id="inputFullName" placeholder="Full Name"/>
+              </div>
+            </div>
+            <div class="w-full md:w-2/3">
+              <div class="mb-4">
+                <label for="inputMobile" class="block text-sm font-medium text-gray-700">Mobile</label>
+                <input type="text" class="block w-full p-2 mt-1 border border-gray-300 rounded" id="inputMobile" placeholder="Mobile"/>
+              </div>
+            </div>
+            <div class="w-full md:w-2/3">
+              <div class="mb-4">
+                <label for="inputEmail" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" class="block w-full p-2 mt-1 border border-gray-300 rounded" id="inputEmail" placeholder="Email"/>
+              </div>
+            </div>
+            <div class="w-full md:w-2/3">
+              <div class="mb-4">
+                <label for="inputStatus" class="block text-sm font-medium text-gray-700">Status</label>
+                <input type="text" class="block w-full p-2 mt-1 border border-gray-300 rounded" id="inputStatus" placeholder="Status"/>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="px-4 py-2 font-semibold text-white bg-blue-600 rounded hover:bg-blue-700">Save Changes</button>
+        </form>
+      </div>
+    </div>`;
+
+      const passwordContent = `
+    <div class="p-10 mb-4 bg-white border border-gray-200 rounded shadow-md">
+      <div class="flex items-center justify-between p-3 bg-white border-b border-gray-200">
+        <h5 class="text-lg font-semibold">Change Password</h5>
+      </div>
+      <div class="p-4">
+        <form>
+          <div class="flex flex-wrap mb-4">
+            <div class="w-full md:w-2/3">
+              <div class="mb-4">
+                <label for="inputOldPassword" class="block text-sm font-medium text-gray-700">Old Password</label>
+                <input type="password" class="block w-full p-2 mt-1 border border-gray-300 rounded" id="inputOldPassword" placeholder="Old Password"/>
+              </div>
+            </div>
+            <div class="w-full md:w-2/3">
+              <div class="mb-4">
+                <label for="inputNewPassword" class="block text-sm font-medium text-gray-700">New Password</label>
+                <input type="password" class="block w-full p-2 mt-1 border border-gray-300 rounded" id="inputNewPassword" placeholder="New Password"/>
+              </div>
+            </div>
+            <div class="w-full md:w-2/3">
+              <div class="mb-4">
+                <label for="inputConfirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input type="password" class="block w-full p-2 mt-1 border border-gray-300 rounded" id="inputConfirmPassword" placeholder="Confirm Password"/>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="px-4 py-2 font-semibold text-white bg-blue-600 rounded hover:bg-blue-700">Change Password</button>
+        </form>
+      </div>
+    </div>`;
+
+      const privacyContent = `
+    <div class="p-10 mb-4 bg-white border border-gray-200 rounded shadow-md">
+      <div class="flex items-center justify-between p-3 bg-white border-b border-gray-200">
+        <h5 class="text-lg font-semibold">Privacy and Safety</h5>
+      </div>
+      <div class="p-4">
+        <form>
+          <!-- Add privacy and safety options here -->
+          <button type="submit" class="px-4 py-2 font-semibold text-white bg-blue-600 rounded hover:bg-blue-700">Save Changes</button>
+        </form>
+      </div>
+    </div>`;
+
+      const emailContent = `
+    <div class="p-10 mb-4 bg-white border border-gray-200 rounded shadow-md">
+      <div class="flex items-center justify-between p-3 bg-white border-b border-gray-200">
+        <h5 class="text-lg font-semibold">Email Notifications</h5>
+      </div>
+      <div class="p-4">
+        <form>
+          <!-- Add email notification options here -->
+          <button type="submit" class="px-4 py-2 font-semibold text-white bg-blue-600 rounded hover:bg-blue-700">Save Changes</button>
+        </form>
+      </div>
+    </div>`;
+
+      const webContent = `
+    <div class="p-10 mb-4 bg-white border border-gray-200 rounded shadow-md">
+      <div class="flex items-center justify-between p-3 bg-white border-b border-gray-200">
+        <h5 class="text-lg font-semibold">Web Notifications</h5>
+      </div>
+      <div class="p-4">
+        <form>
+          <!-- Add web notification options here -->
+          <button type="submit" class="px-4 py-2 font-semibold text-white bg-blue-600 rounded hover:bg-blue-700">Save Changes</button>
+        </form>
+      </div>
+    </div>`;
+
+      function showContent(section) {
+        switch (section) {
+          case "account":
+            contentSection.innerHTML = accountContent;
+            loadAccountData(); // Load data into the account section
+            break;
+          case "password":
+            contentSection.innerHTML = passwordContent;
+            break;
+          case "privacy":
+            contentSection.innerHTML = privacyContent;
+            break;
+          case "email":
+            contentSection.innerHTML = emailContent;
+            break;
+          case "web":
+            contentSection.innerHTML = webContent;
+            break;
+          default:
+            contentSection.innerHTML = accountContent;
+            loadAccountData(); // Load data into the account section
+            break;
+        }
+      }
+
+      function loadAccountData() {
+        document.getElementById("inputFullName").value =
+          localStorage.getItem("fullName") || "";
+        document.getElementById("inputMobile").value =
+          localStorage.getItem("mobile") || "";
+        document.getElementById("inputEmail").value =
+          localStorage.getItem("email") || "";
+        document.getElementById("inputStatus").value =
+          localStorage.getItem("status") || "";
+      }
+
+      document
+        .getElementById("accountLink")
+        .addEventListener("click", () => showContent("account"));
+      document
+        .getElementById("passwordLink")
+        .addEventListener("click", () => showContent("password"));
+      document
+        .getElementById("privacyLink")
+        .addEventListener("click", () => showContent("privacy"));
+      document
+        .getElementById("emailLink")
+        .addEventListener("click", () => showContent("email"));
+      document
+        .getElementById("webLink")
+        .addEventListener("click", () => showContent("web"));
+
+      // Load the default content section
+      showContent("account");
+    </script>
+  </body>
+</html>
