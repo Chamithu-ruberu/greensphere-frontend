@@ -59,6 +59,7 @@
     const name = document.getElementById("name").value;
     const city = document.getElementById("city").value;
     const password = document.getElementById("password").value;
+    const mobile = document.getElementById("mobile").value;
 
     const payload = {
       username,
@@ -102,6 +103,7 @@
         localStorage.setItem("email", responseData.data.user.email);
         localStorage.setItem("status", responseData.data.user.status);
         localStorage.setItem("user_id", responseData.data.user.user_id);
+        localStorage.setItem("mobile", responseData.data.user.mobile);
 
         alert("User registered successfully!");
         window.location.href = "/GovUserdashboard/govUserHome.html";
