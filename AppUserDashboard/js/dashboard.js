@@ -214,14 +214,41 @@
           ctx.textBaseline = "middle";
           ctx.fillStyle = "#000";
       
-          var text = "63",
-              textX = Math.round((width - ctx.measureText(text).width) / 2),
-              textY = height / 2;
+          // Function to format date to 'YYYY-MM-DD'
+          function formatDateToYYYYMMDD(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+          }
       
-          ctx.fillText(text, textX, textY);
-          ctx.save();
+          const currentDate = new Date();
+          const formattedDate = formatDateToYYYYMMDD(currentDate);
+      
+          // Fetch the data and update the text once the data is received
+          fetch(`http://127.0.0.1:8080/api/v1/waste/count/by-date?date=${formattedDate}`, { method: 'GET' })
+            .then(response => response.text())
+            .then(data => {
+              // Extracting the count from the response text
+              const countMatch = data.match(/Count of waste processing for date .*: (\d+)/);
+              if (countMatch) {
+                var text = countMatch[1];
+                var textX = Math.round((width - ctx.measureText(text).width) / 2);
+                var textY = height / 2; // Set the text variable with the count value
+                console.log(text); // Output for debugging, can be removed in production
+      
+                // Draw the text only after fetching the data
+                ctx.fillText(text, textX, textY);
+                ctx.save();
+              } else {
+                console.error('Failed to extract count from response:', data);
+              }
+            })
+            .catch(error => console.error('Error fetching count:', error));
         }
-      }
+      };
+      
+      
       var northAmericaChartCanvas = $("#north-america-chart").get(0).getContext("2d");
       var northAmericaChart = new Chart(northAmericaChartCanvas, {
         type: 'doughnut',
