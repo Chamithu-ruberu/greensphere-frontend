@@ -59,7 +59,7 @@
                       class="block w-full h-12 px-3 py-2 mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
                   </div>
-                  <div class="flex items-center">
+                  <!-- <div class="flex items-center">
                     <input
                       type="checkbox"
                       id="isGov"
@@ -69,7 +69,7 @@
                     <label for="isGov" class="block ml-2 text-sm text-gray-900"
                       >Government User</label
                     >
-                  </div>
+                  </div> -->
                   <button
                     type="submit"
                     class="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -89,42 +89,45 @@
             .getElementById("loginForm")
             .addEventListener("submit", async function (event) {
               event.preventDefault(); // Prevent the form from submitting the default way
-
+        
               // Collect form data
               const email = document.getElementById("email").value;
               const password = document.getElementById("password").value;
-              const isGov = document.getElementById("isGov").checked;
-              const role_type = isGov
-                ? "ROLE_GOVERNMENT_USER"
-                : "ROLE_APP_USER";
-
-              // Send login request
+        
+              // Send login request to get user data
               try {
-                const response = await fetch(
-                  "http://localhost:8082/user/login",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ email, password, role_type }),
-                  }
-                );
-
+                const response = await fetch("http://localhost:8082/user/login", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ email, password }),
+                });
+        
                 if (!response.ok) {
                   throw new Error("Login failed");
                 }
-
+        
                 const data = await response.json();
                 console.log("Response Data:", data);
-
+        
                 // Debugging: Check if data is available
                 if (!data || !data.data || !data.data.user) {
                   console.error("Unexpected response format", data);
                   alert("Unexpected response format. Please try again.");
                   return;
                 }
-
+        
+                // Determine the role_type based on the existence of gov_id
+                let role_type;
+                if (data.data.user.gov_id) {
+                  localStorage.setItem("gov_id", data.data.user.gov_id);
+                  role_type = "ROLE_GOVERNMENT_USER";
+                } else {
+                  localStorage.removeItem("gov_id"); // Ensure gov_id is not set if user is not a government user
+                  role_type = "ROLE_APP_USER";
+                }
+        
                 // Save tokens and user details in localStorage
                 localStorage.setItem("token", data.data.token);
                 localStorage.setItem("refresh_token", data.data.refresh_token); // Save refresh token if needed
@@ -133,30 +136,12 @@
                 localStorage.setItem("email", data.data.user.email);
                 localStorage.setItem("status", data.data.user.status);
                 localStorage.setItem("mobile", data.data.user.mobile);
-
-                // Only save gov_id if it exists
-                if (data.data.user.gov_id) {
-                  localStorage.setItem("gov_id", data.data.user.gov_id);
-                } else {
-                  localStorage.removeItem("gov_id"); // Ensure gov_id is not set if user is not a government user
-                }
-
-                // Debugging: Check what is saved in localStorage
-                console.log("LocalStorage:", {
-                  token: localStorage.getItem("token"),
-                  refresh_token: localStorage.getItem("refresh_token"),
-                  fullName: localStorage.getItem("fullName"),
-                  city: localStorage.getItem("city"),
-                  email: localStorage.getItem("email"),
-                  status: localStorage.getItem("status"),
-                  gov_id: localStorage.getItem("gov_id"),
-                });
-
+        
                 // Check the gov_id field to determine user type
                 const gov_id = localStorage.getItem("gov_id");
                 if (gov_id) {
                   // Handle successful login for government user
-                  window.location.href = "/home.html"; // Redirect to government user dashboard
+                  window.location.href = "/GovUserdashboard/govUserHome.html"; // Redirect to government user dashboard
                 } else {
                   // Handle successful login for app user
                   window.location.href = "/AppUserDashboard/appUserHome.html"; // Redirect to app user dashboard
