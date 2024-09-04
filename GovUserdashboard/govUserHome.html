@@ -273,309 +273,351 @@
                     <div class="col-md-6 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <p class="card-title">Upload Image</p>
+                                <p class="card-title">Waste Collection Data</p>
                                 <p class="text-muted font-weight-light">
-                                    Our advanced classification model accurately identifies and categorizes waste into cardboard, glass, metal, paper, plastic, and trash. By improving waste sorting, we contribute to a cleaner environment and promote sustainable waste management practices.
+                                    All Active Waste Collection data up to now.
                                 </p>
-                                <div class="form-group">
-                                    <label for="weight-input" style="font-weight: 600;">Enter Waste Weight (in kg):</label>
-                                    <input type="number" class="form-control" id="weight-input" placeholder="e.g., 1.5" step="0.01" min="0" style="border-radius: 5px; padding: 10px; border: 1px solid #ced4da;">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="location-input" style="font-weight: 600;">Device Current Location:</label>
-                                    <input type="text" class="form-control" id="location-input" placeholder="Latitude, Longitude" readonly style="border-radius: 5px; padding: 10px; border: 1px solid #ced4da;">
-                                    <button type="button" class="mt-2 btn btn-primary" onclick="getCurrentLocation()" style="border-radius: 5px;">Get Current Location</button>
-                                </div>
-                                <div id="image-legend" class="mt-4 mb-2 chartjs-legend">
-                                    <div class="upload-container" style="display: flex; justify-content: center; align-items: center; background-color: #fcfcfc; padding: 20px;">
-                                        <div class="card upload-card" style="border-radius: 10px; box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3); width: 400px; height: 300px; background-color: #ffffff; padding: 20px;">
-                                            <h3 class="upload-title" style="font-size: 22px; font-weight: 600;">Upload Image</h3>
-                                            <div class="drop_box" style="margin: 10px 0; padding: 30px; display: flex; align-items: center; justify-content: center; flex-direction: column; border: 3px dotted #a3a3a3; border-radius: 5px; cursor: pointer;">
-                                                <header>
-                                                    <h4 style="font-size: 16px; font-weight: 400; color: #2e2e2e;">Drag & Drop or Click to Select Image</h4>
-                                                </header>
-                                                <p style="margin-top: 10px; margin-bottom: 20px; font-size: 12px; color: #a3a3a3;">Images Supported: JPG, JPEG, PNG</p>
-                                                <input type="file" hidden accept="image/*" id="fileID">
-                                                <button class="btn upload-btn" style="background-color: #005af0; color: #ffffff; padding: 10px 20px; border: none; outline: none; transition: 0.3s;">Choose Image</button>
-                                            </div>
-                                            <div class="progress-bar" style="width: 100%; background-color: #f3f3f3; border-radius: 5px; overflow: hidden; height: 20px; display: none;">
-                                                <div class="progress" style="width: 0%; height: 100%; background-color: #4caf50;"></div>
-                                            </div>
-                                            <div class="status-message" style="text-align: center; margin-top: 10px; display: none;"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <canvas id="image-chart"></canvas>
-                            </div>
-                            <div class="card border-right-0 border-left-0 border-bottom-0">
-                                <div class="d-flex justify-content-center justify-content-md-end">
-                                    <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuDate2">
-                                        </div>
-                                    </div>
-                                    <button class="border-0 btn btn-lg btn-outline-light text-primary rounded-0 d-none d-md-block"
-                                            type="button"> View all </button>
-                                </div>
+                                
+                                <!-- Search Input -->
+                                <input type="text" id="searchCategory" placeholder="Search by Category" class="form-control mb-3">
+                
+                                <!-- Table Structure -->
+                                <table class="table table-hover" id="wasteDataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Waste ID</th>
+                                            <th>Category</th>
+                                            <th>Weight</th>
+                                            <th>Location</th>
+                                           
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be populated here -->
+                                    </tbody>
+                                </table>
+                
+                                <!-- View All Button -->
+                                <button class="border-0 btn btn-lg btn-outline-light text-primary rounded-0 d-none d-md-block" id="viewAllButton" type="button"> View all </button>
+                
                             </div>
                         </div>
                     </div>
-
+                
+                
 
                     <div class="col-md-6 grid-margin stretch-card">
                         <div class="card border-bottom-0">
                             <div class="pb-0 card-body">
-                                <p class="card-title">Classification</p>
-                                <p class="text-muted font-weight-light">Our image classification model is designed to enhance waste management efficiency by accurately identifying and categorizing waste materials. By leveraging advanced machine learning algorithms, we ensure precise and reliable sorting, contributing to more effective recycling and sustainable practices. Upload your image to see the classification result and support our mission for a cleaner environment.</p>
+                                <p class="card-title">Assign Transport Users to Collect Waste</p>
+                                <p class="text-muted font-weight-light">Correctly Assign Users with Locations nearby.</p>
+                                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEBSjGbXcpCyB4BkfW1cD6a2a39PhuWgw&callback=initMap"></script>
 
-                                <div class="flex-wrap mb-5 d-flex">
-                                    <div class="mt-3 me-5">
-                                        <p class="text-muted">Result</p>
-                                        <h3 id="result-card"></h3>
-                                    </div>
-
-                                </div>
-                                <!-- Image preview -->
-                                <div class="image-preview" style="display: none; margin-top: 20px;">
-                                    <img id="uploaded-image" src="" alt="Uploaded Image" style="width: 100%; max-height: 300px; object-fit: cover; border: 1px solid #ddd; border-radius: 5px;">
-                                </div>
+                                <div id="map" style="height: 400px; width: 100%;"></div>
+                                <form id="assign-transport-form">
+                                    <label for="users">Assign Driver:</label>
+                                    <select id="users" name="userId" class="form-control">
+                                        <!-- User options will be populated here -->
+                                    </select>
+                                    <input type="hidden" id="wasteId" name="wasteId">
+                                    <input type="hidden" id="geolocation" name="geolocation">
+                                    <button class="border-0 btn btn-lg btn-outline-light text-primary rounded-0 d-none d-md-block" id="viewAllButton" type="submit"> Assign </button>
+                                </form>                                
+ 
                             </div>
-                            <canvas id="order-chart" class="w-100"></canvas>
+                  
                         </div>
                     </div>
                 </div>
+
                 <script>
-                    function getCurrentLocation() {
-                        if (navigator.geolocation) {
-                            navigator.geolocation.getCurrentPosition(function(position) {
-                                const latitude = position.coords.latitude;
-                                const longitude = position.coords.longitude;
-                                document.getElementById("location-input").value = `${latitude}, ${longitude}`;
-                            }, function(error) {
-                                alert("Unable to retrieve location. Please ensure location services are enabled.");
-                            });
-                        } else {
-                            alert("Geolocation is not supported by this browser.");
-                        }
+
+                    function initMap() {
+                         
+                        // Center the map to a default location
+                        var defaultLocation = { lat: 6.821990, lng: 80.040479 }; // Example coordinates
+                        var map = new google.maps.Map(document.getElementById('map'), {
+                            zoom: 12,
+                            center: defaultLocation
+                        });
                     }
-                </script>
 
-                <script>
-                    const dropArea = document.querySelector(".upload-container .drop_box"),
-                        button = dropArea.querySelector(".upload-btn"),
-                        input = dropArea.querySelector("input"),
-                        progressBar = document.querySelector(".progress-bar"),
-                        progress = document.querySelector(".progress"),
-                        statusMessage = document.querySelector(".status-message"),
-                        uploadedImage = document.querySelector("#uploaded-image"),
-                        imagePreview = document.querySelector(".image-preview");
+                    function showLocationOnMap(geolocation) {
+                        const [lat, lng] = geolocation.split(',').map(Number); // Assuming `geolocation` is a string like "latitude,longitude"
+                        const location = { lat, lng };
+                        const map = new google.maps.Map(document.getElementById('map'), {
+                            zoom: 12,
+                            center: location
+                        });
 
+                        // Place a marker on the map
+                        new google.maps.Marker({
+                            position: location,
+                            map: map
+                        });
+                    }
 
-
-                    button.onclick = () => {
-                        input.click();
-                    };
-
-                    input.addEventListener("change", handleFiles);
-                    dropArea.addEventListener("dragover", (e) => {
-                        e.preventDefault();
-                        dropArea.style.borderColor = "#005af0";
-                    });
-
-                    dropArea.addEventListener("dragleave", () => {
-                        dropArea.style.borderColor = "#a3a3a3";
-                    });
-
-                    dropArea.addEventListener("drop", (e) => {
-                        e.preventDefault();
-                        dropArea.style.borderColor = "#a3a3a3";
-                        const files = e.dataTransfer.files;
-                        if (files.length > 0 && files[0].type.startsWith('image/')) {
-                            handleFiles({target: {files: files}});
-                        } else {
-                            displayMessage('Please drop a valid image file.', 'error');
-                        }
-                    });
-
-                    function handleFiles(e) {
-                        const file = e.target.files[0];
-                        const weightInput = document.getElementById('weight-input').value;
-                        const locationInput = document.getElementById('location-input').value;
-
-                        if (file && file.type.startsWith('image/')) {
-                            const formData = new FormData();
-                            formData.append('file', file);
-                            formData.append('weight', weightInput);  // Append the weight
-                            formData.append('location', locationInput);  // Append the location
-
-                            // Display image preview
-                            const reader = new FileReader();
-                            reader.onload = function (event) {
-                                uploadedImage.src = event.target.result;
-                                imagePreview.style.display = 'block';
-                            };
-                            reader.readAsDataURL(file);
-
-                            progressBar.style.display = 'block';
-                            statusMessage.style.display = 'none';
-
-                            fetch('http://localhost:8080/api/v1/upload', {
-                                method: 'POST',
-                                body: formData
-                            })
-                                .then(response => response.text())
-                                .then(data => {
-                                    displayMessage('Upload successful!', 'success');
-                                    updateResult(data); // Update the result here
-                                    resetProgressBar();
-                                })
-                                .catch(error => {
-                                    displayMessage('Upload failed.', 'error');
-                                    resetProgressBar();
+                    function loadDriversNearby(geolocation) {
+                        // Fetch nearby drivers based on geolocation
+                        fetch(`http://127.0.0.1:8081/api/v1/users/nearby?geolocation=${geolocation}`)
+                            .then(response => response.json())
+                            .then(users => {
+                                const userSelect = document.getElementById('users');
+                                userSelect.innerHTML = ''; // Clear previous options
+                                users.forEach(user => {
+                                    const option = document.createElement('option');
+                                    option.value = user.id;
+                                    option.textContent = user.name;
+                                    userSelect.appendChild(option);
                                 });
+                            })
+                            .catch(error => console.error('Error fetching users:', error));
+                    }
 
-                            simulateProgress();
+                    document.getElementById('assign-transport-form').addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const wasteId = document.getElementById('wasteId').value;
+                    const userId = document.getElementById('users').value;
+                    const geolocation = document.getElementById('geolocation').value;
+
+                    // Check that wasteId and other parameters are properly set
+                    if (!wasteId) {
+                        alert("Waste ID is not set. Please select a waste item from the table.");
+                        return;
+                    }
+                    console.log("waste id from submit :",wasteId);
+                    console.log("waste id from submit :",geolocation);
+                    // Construct the URL with query parameters
+                    const url = `http://127.0.0.1:8081/api/v1/transport/save?wasteId=${wasteId}&userId=1&geolocation=${encodeURIComponent(geolocation)}`;
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                    .then(response => {
+                        // Check if the response is JSON
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            return response.json(); // Parse JSON response
                         } else {
-                            displayMessage('Please select a valid image file.', 'error');
+                            return response.text(); // Parse as text if not JSON
                         }
-                    }
+                    })
+                    .then(result => {
+                        // Handle the result based on its type
+                        if (typeof result === 'object') {
+                            alert(result.message);
+                        } else {
+                            alert(result); // Handle plain text response
+                        }
+                    })
+                    .catch(error => console.error('Error assigning transport:', error));
 
 
+                });
 
-                    function displayMessage(message, type) {
-                        statusMessage.style.display = 'block';
-                        statusMessage.style.color = type === 'success' ? '#4caf50' : '#f44336';
-                        statusMessage.textContent = message;
-                        setTimeout(() => {
-                            statusMessage.style.display = 'none';
-                        }, 3000);
-                    }
 
-                    function simulateProgress() {
-                        let width = 0;
-                        const interval = setInterval(() => {
-                            if (width >= 100) {
-                                clearInterval(interval);
-                            } else {
-                                width++;
-                                progress.style.width = width + '%';
-                            }
-                        }, 30);
-                    }
-
-                    function resetProgressBar() {
-                        setTimeout(() => {
-                            progressBar.style.display = 'none';
-                            progress.style.width = '0%';
-                        }, 3000);
-                    }
 
                 </script>
-
 
                 <script>
-                    const resultHeading = document.querySelector("#result-card");
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const wasteDataTable = document.getElementById("wasteDataTable").querySelector("tbody");
+                        const searchCategory = document.getElementById("searchCategory");
+                        const viewAllButton = document.getElementById("viewAllButton");
 
-                    function updateResult(responseText) {
-                        let result;
-                        try {
-                            // Log the response text to inspect its format
-                            console.log("Response Text:", responseText);
-
-                            // Since the response is plain text, set result directly
-                            result = responseText.trim();
-
-                        } catch (error) {
-                            // Handle any errors that occur
-                            console.error("Error processing response:", error);
-                            result = "Error processing response";
+                        // Fetch and Display All Waste Data
+                        function fetchWasteData() {
+                            fetch('http://127.0.0.1:8081/api/v1/transport')
+                                .then(response => response.json())
+                                .then(data => populateTable(data))
+                                .catch(error => console.error('Error fetching data:', error));
                         }
 
-                        // Update the result heading after a 3-second delay
-                        setTimeout(() => {
-                            resultHeading.textContent = result;
-                        }, 3000);
-                    }
-                </script>
+                        // Populate Table with Data
+                        function populateTable(data) {
+                            wasteDataTable.innerHTML = ""; // Clear existing rows
+                            data.forEach(waste => {
+                                const row = document.createElement("tr");
+                                row.innerHTML = `
+                                    <td>${waste.id}</td>
+                                    <td>${waste.category}</td>
+                                    <td>${waste.weight}</td>
+                                    <td>${waste.location}</td>
+                                `;
+                                // Add click event to each row
+                                row.addEventListener('click', () => {
+                                    // Set wasteId and geolocation in the hidden inputs
+                                    document.getElementById('wasteId').value = waste.id;
+                                    document.getElementById('geolocation').value = waste.location; // Assuming location is in "lat,lng" format
+                                    showLocationOnMap(waste.location);
+                                    loadDriversNearby(waste.location); // Load drivers based on location
+                                    
+                                    // Debugging logs
+                                    console.log("Waste ID set:", waste.id);
+                                    console.log("Geolocation set:", waste.location);
+                                });
+                                wasteDataTable.appendChild(row);
+                            });
+                        }
+
+                        // Fetch Data by Category
+                        searchCategory.addEventListener("input", function () {
+                            const category = searchCategory.value;
+                            if (category) {
+                                fetch(`http://127.0.0.1:8081/api/v1/transport/findCategory?category=${encodeURIComponent(category)}`, {
+                                    method: 'POST'
+                                })
+                                .then(response => response.json())
+                                .then(data => populateTable(data))
+                                .catch(error => console.error('Error fetching data:', error));
+                            } else {
+                                fetchWasteData(); // Show all if search is cleared
+                            }
+                        });
+
+                        // View All Button Event
+                        viewAllButton.addEventListener("click", fetchWasteData);
+
+                        // Fetch all data on page load
+                        fetchWasteData();
+                    });
+
+                    </script>
+                    
 
                 <div class="row">
-                    <div class="col-md-12 grid-margin stretch-card">
+                    <div class="col-md-7 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <p class="mb-0 card-title">Waste Classification Reports by me</p>
+                                <p class="mb-0 card-title">Transport Data</p>
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="wasteDataTable">
+                                    <table class="table table-hover" id="transportDataTable">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
-                                                <th>Category</th>
-                                                <th>Collection Date</th>
-                                                <th>Weight</th>
-                                                <th>Location</th>
+                                                <th>Waste ID</th>
+                                                <th>User ID</th>
+                                                <th>Geolocation</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!-- Data rows will be injected here -->
-                                        </tbody>   
-                                        </table>                         
+                                            <!-- Data rows will be appended here -->
+                                        </tbody>
+                                        </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <script>
-                        document.addEventListener('DOMContentLoaded', () => {
-                            const tableBody = document.querySelector('#wasteDataTable tbody');
-                        
-                            // Fetch waste data
-                            fetch('http://127.0.0.1:8080/api/v1/waste/user?userId=1')  // Adjust userId as needed
+                        // Fetch transport data and display in the table
+                        function loadTransportData() {
+                            fetch('http://127.0.0.1:8081/api/v1/transport/all')
                                 .then(response => response.json())
                                 .then(data => {
-                                    // Populate table
-                                    data.forEach(record => {
+                                    const tableBody = document.getElementById('transportDataTable').getElementsByTagName('tbody')[0];
+                                    tableBody.innerHTML = ''; // Clear existing data
+                                    data.forEach(transport => {
                                         const row = document.createElement('tr');
                                         row.innerHTML = `
-                                            <td>${record.id}</td>
-                                            <td>${record.category}</td>
-                                            <td>${new Date(record.collectionDate).toLocaleDateString()}</td>
-                                            <td>${record.weight}</td>
-                                            <td>${record.location}</td>
+                                            <td>${transport.id}</td>
+                                            <td>${transport.wasteId}</td>
+                                            <td>${transport.userId}</td>
+                                            <td>${transport.geolocation}</td>
                                             <td>
-                                                                                  
-                                      
-                                                <button class="border-0 btn btn-lg btn-outline-light text-primary rounded-0 d-none d-md-block"onclick="deleteRecord(${record.id})">Delete</button>
+   
+                                            <button class="border-0 btn btn-lg btn-outline-light text-primary rounded-0 d-none d-md-block" onclick="deleteTransportData(${transport.id})" > Delete </button>
+                                               
                                             </td>
                                         `;
                                         tableBody.appendChild(row);
                                     });
                                 })
-                                .catch(error => console.error('Error fetching data:', error));
-                        });
-                        
-                        // Function to delete a record
-                        function deleteRecord(wasteId) {
-                            fetch(`http://127.0.0.1:8080/api/v1/waste/delete/${wasteId}`, {
-                                method: 'DELETE',
+                                .catch(error => console.error('Error loading transport data:', error));
+                        }
+                    
+                        // Delete transport data by ID
+                        function deleteTransportData(transportId) {
+                            fetch(`http://127.0.0.1:8081/api/v1/transport/delete?id=${transportId}`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                             })
-                            .then(response => {
-                                if (response.ok) {
-                                    return response.text();
-                                }
-                                throw new Error('Network response was not ok.');
-                            })
+                            .then(response => response.text())
                             .then(message => {
                                 alert(message);
-                                // Remove the record from the table
-                                document.querySelector(`#wasteDataTable tbody tr:nth-child(${wasteId})`).remove();
+                                loadTransportData(); // Refresh data after deletion
                             })
-                            .catch(error => console.error('Error deleting record:', error));
+                            .catch(error => console.error('Error deleting transport data:', error));
                         }
-                        </script>
-                        
-
-
-
+                    
+                        // Load transport data on page load
+                        document.addEventListener('DOMContentLoaded', loadTransportData);
+                    </script>
+                    <div class="col-md-5 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">To Do Lists</h4>
+                                <div class="pt-2 list-wrapper">
+                                    <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
+                                        <li>
+                                            <div class="form-check form-check-flat">
+                                                <label class="form-check-label">
+                                                    <input class="checkbox" type="checkbox">
+                                                    Become A Travel Pro In One Easy Lesson
+                                                </label>
+                                            </div>
+                                            <i class="remove ti-trash"></i>
+                                        </li>
+                                        <li class="completed">
+                                            <div class="form-check form-check-flat">
+                                                <label class="form-check-label">
+                                                    <input class="checkbox" type="checkbox" checked>
+                                                    See The Unmatched Beauty Of The Great Lakes
+                                                </label>
+                                            </div>
+                                            <i class="remove ti-trash"></i>
+                                        </li>
+                                        <li>
+                                            <div class="form-check form-check-flat">
+                                                <label class="form-check-label">
+                                                    <input class="checkbox" type="checkbox">
+                                                    Copper Canyon
+                                                </label>
+                                            </div>
+                                            <i class="remove ti-trash"></i>
+                                        </li>
+                                        <li class="completed">
+                                            <div class="form-check form-check-flat">
+                                                <label class="form-check-label">
+                                                    <input class="checkbox" type="checkbox" checked>
+                                                    Top Things To See During A Holiday In Hong Kong
+                                                </label>
+                                            </div>
+                                            <i class="remove ti-trash"></i>
+                                        </li>
+                                        <li>
+                                            <div class="form-check form-check-flat">
+                                                <label class="form-check-label">
+                                                    <input class="checkbox" type="checkbox">
+                                                    Travelagent India
+                                                </label>
+                                            </div>
+                                            <i class="remove ti-trash"></i>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4 mb-0 add-items d-flex">
+                                    <label>
+                                        <input type="text" class="form-control todo-list-input me-2" placeholder="Add new task">
+                                    </label>
+                                    <button class="bg-transparent add btn btn-icon text-primary todo-list-add-btn"><i
+                                            class="ti-location-arrow"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-12 grid-margin stretch-card">
                         <div class="card position-relative">
@@ -584,36 +626,12 @@
                                 <div class="row">
                                     <div class="col-md-12 col-xl-3 d-flex flex-column justify-content-center">
                                         <div class="ml-xl-4">
-                                            <h1 id="countDisplay">Loading...</h1>
-                                            <h3 class="font-weight-light mb-xl-4">No. of Reports</h3>
-                                            <p class="mb-2 text-muted mb-xl-0">
-                                                This figure represents the total number of waste data entries recorded for the specified user. It indicates the cumulative count of all waste records associated with the user within the selected date range.
-                                            </p>
-                                            
+                                            <h1>33500</h1>
+                                            <h3 class="font-weight-light mb-xl-4">Sales</h3>
+                                            <p class="mb-2 text-muted mb-xl-0">The total number of sessions within the date range. It is the
+                                                period time a user is actively engaged with your website, page or app, etc</p>
                                         </div>
-
-                                        </div>
-
-                                    <script>
-                                        document.addEventListener('DOMContentLoaded', () => {
-                                            const userId = 1; // Replace with dynamic userId if needed
-                                            const countDisplay = document.getElementById('countDisplay');
-                                        
-                                            // Fetch count data
-                                            fetch(`http://localhost:8080/api/v1/waste/count/by-user/${userId}`)
-                                                .then(response => response.text())
-                                                .then(data => {
-                                                    // Assuming the data is in the format "Count of waste data for userId X: Y"
-                                                    const count = data.split(': ')[1];
-                                                    countDisplay.textContent = count;
-                                                })
-                                                .catch(error => {
-                                                    console.error('Error fetching count data:', error);
-                                                    countDisplay.textContent = 'Error fetching data';
-                                                });
-                                        });
-                                        </script>
-                                        
+                                    </div>
                                     <div class="col-md-12 col-xl-9">
                                         <div class="row">
                                             <div class="mt-3 col-md-6 col-xl-5">
