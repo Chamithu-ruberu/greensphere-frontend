@@ -226,11 +226,14 @@
                 class="dropdown-menu dropdown-menu-right navbar-dropdown"
                 aria-labelledby="profileDropdown"
               >
-                <a class="dropdown-item" href="GovuserProfile.html">
+                <a
+                  class="dropdown-item"
+                  href="GovuserProfile.html"
+                >
                   <i class="ti-settings text-primary"></i>
                   Settings
                 </a>
-                <a class="dropdown-item" onclick="handleLogout()">
+                <a class="dropdown-item" href="">
                   <i class="ti-power-off text-primary"></i>
                   Logout
                 </a>
@@ -246,39 +249,6 @@
           </button>
         </div>
       </nav>
-      <script>
-        function handleLogout() {
-            const token = localStorage.getItem('token');
-        
-            if (token) {
-                fetch('http://localhost:8082/user/logout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ token: token }),
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // Clear all local storage
-                        localStorage.clear();
-        
-                        // Redirect to the index page
-                        window.location.href = '/index.html';
-                    } else {
-                        console.error('Logout failed');
-                        // Handle any errors here
-                    }
-                })
-                .catch(error => {
-                    console.error('An error occurred:', error);
-                });
-            } else {
-                console.error('No token found in local storage');
-                // Handle the case where the token is missing
-            }
-        }
-      </script>
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_sidebar.html -->
