@@ -399,27 +399,63 @@
                     </p>
                     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEBSjGbXcpCyB4BkfW1cD6a2a39PhuWgw&callback=initMap"></script>
 
-                    <div id="map" style="height: 400px; width: 100%"></div>
-                    <form id="assign-transport-form">
-                      <label for="users">Assign Driver:</label>
-                      <select id="users" name="userId" class="form-control">
-                        <!-- User options will be populated here -->
-                      </select>
+                    <div
+                    id="map-container"
+                    style="
+                      padding: 20px;
+                      background-color: #f9f9f9;
+                      border: 1px solid #ddd;
+                      border-radius: 8px;
+                      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    "
+                  >
+                    <div
+                      id="map"
+                      style="
+                        height: 400px;
+                        width: 100%;
+                        margin-bottom: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                      "
+                    ></div>
+                    <form
+                      id="assign-transport-form"
+                      style="padding: 10px 20px; background-color: #fff; border-radius: 8px;"
+                    >
+                      <div class="form-group mb-3">
+                        <label for="users" style="font-weight: bold; color: #333;"
+                          >Assign Driver:</label
+                        >
+                        <select
+                          id="users"
+                          name="userId"
+                          class="form-control"
+                          style="border: 1px solid #ddd; border-radius: 4px; padding: 8px;"
+                        >
+                          <!-- User options will be populated here -->
+                        </select>
+                      </div>
                       <input type="hidden" id="wasteId" name="wasteId" />
-                      <input
-                        type="hidden"
-                        id="geolocation"
-                        name="geolocation"
-                      />
-                      <button
-                        class="border-0 btn btn-lg btn-outline-light text-primary rounded-0 d-none d-md-block"
-                        id="viewAllButton"
-                        type="submit"
-                      >
-                        Assign
-                      </button>
+                      <input type="hidden" id="geolocation" name="geolocation" />
+                      <div class="d-flex justify-content-end">
+                        <button
+                          class="btn btn-primary btn-small rounded-pill shadow-sm"
+                          id="viewAllButton"
+                          type="submit"
+                          style="
+                            background-color: #007bff;
+                            border-color: #007bff;
+                            color: #fff;
+                            transition: background-color 0.3s, border-color 0.3s;
+                          "
+                        >
+                          Assign
+                        </button>
+                      </div>
                     </form>
                   </div>
+                  
                 </div>
               </div>
             </div>
@@ -452,25 +488,32 @@
                 });
               }
 
-              function loadDriversNearby(geolocation) {
-                // Fetch nearby drivers based on geolocation
-                fetch(
-                  `http://127.0.0.1:8082/api/v1/users/nearby?geolocation=${geolocation}`
-                )
-                  .then((response) => response.json())
-                  .then((users) => {
+              function loadDriver() {
+                fetch('http://127.0.0.1:8082/user/get-gov-users', {
+                  method: "POST"
+                })
+                  .then(response => response.json())
+                  .then(data => {
+                    // Access the 'data' property from the response
+                    console.log(data.data);
+                    const usersData = data.data;
+                    
+                    // Extract the user objects from the 'data' property
+                    const users = Object.values(usersData);
+
                     const userSelect = document.getElementById("users");
                     userSelect.innerHTML = ""; // Clear previous options
-                    users.forEach((user) => {
+                    
+                    // Populate the select element with user options
+                    users.forEach(user => {
                       const option = document.createElement("option");
-                      option.value = user.id;
-                      option.textContent = user.name;
+                      option.value = user.username;
+                      option.textContent = user.fullName || user.username; // Use fullName if available, otherwise username
                       userSelect.appendChild(option);
+                      console.log("usernme is", user.username);
                     });
                   })
-                  .catch((error) =>
-                    console.error("Error fetching users:", error)
-                  );
+                  .catch(error => console.error("Error fetching users:", error));
               }
 
               document
@@ -490,15 +533,25 @@
                     return;
                   }
                   console.log("waste id from submit :", wasteId);
-                  console.log("waste id from submit :", geolocation);
+                  console.log("waste geolocation to submit :", geolocation);
+                  console.log("user id is ",userId);
+                  
+                // Retrieve token and username from local storage
+                const username = localStorage.getItem("username");
+                const token = localStorage.getItem("token");
+
+                // Initialize headers with the Authorization token
+                const headers = new Headers();
+                headers.append("Authorization", `Bearer ${token}`);
                   // Construct the URL with query parameters
-                  const url = `http://127.0.0.1:8081/api/v1/transport/save?wasteId=${wasteId}&userId=1&geolocation=${encodeURIComponent(
+                  const url = `http://127.0.0.1:8081/api/v1/transport/save?wasteId=${wasteId}&userId=${userId}&geolocation=${encodeURIComponent(
                     geolocation
                   )}`;
 
                   fetch(url, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: headers,
+
                   })
                     .then((response) => {
                       // Check if the response is JSON
@@ -577,7 +630,7 @@
                       document.getElementById("geolocation").value =
                         waste.location; // Assuming location is in "lat,lng" format
                       showLocationOnMap(waste.location);
-                      loadDriversNearby(waste.location); // Load drivers based on location
+                      loadDriver(); // Load drivers based on location
 
                       // Debugging logs
                       console.log("Waste ID set:", waste.id);
@@ -617,102 +670,91 @@
                 fetchWasteData();
               });
             </script>
+<div class="row">
+  <div class="col-md-13 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <p class="mb-0 card-title">Transport Data</p>
+        <div class="table-responsive">
+          <table class="table table-hover" id="transportDataTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Waste ID</th>
+                <th>User ID</th>
+                <th>Geolocation</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data rows will be appended here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-            <div class="row">
-              <div class="col-md-13 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <p class="mb-0 card-title">Transport Data</p>
-                    <div class="table-responsive">
-                      <table class="table table-hover" id="transportDataTable">
-                        <thead>
-                          <tr>
-                            <th>ID</th>
-                            <th>Waste ID</th>
-                            <th>User ID</th>
-                            <th>Geolocation</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <!-- Data rows will be appended here -->
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <script>
-                const username = localStorage.getItem("username");
+<script>
+  const username = localStorage.getItem("username");
+  const token = localStorage.getItem("token");
+  const headers = new Headers();
+  headers.append("Authorization", `Bearer ${token}`);
+  headers.append("Content-Type", "application/json"); // Correct header type for JSON requests
 
-                const token = localStorage.getItem("token");
-                const headers = new Headers();
-                headers.append("Authorization", `Bearer ${token}`);
-                // Fetch transport data and display in the table
-                function loadTransportData() {
-                  fetch("http://127.0.0.1:8081/api/v1/transport/all", {
-                    method: "GET",
-                    headers: headers,
-                  })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      const tableBody = document
-                        .getElementById("transportDataTable")
-                        .getElementsByTagName("tbody")[0];
-                      tableBody.innerHTML = ""; // Clear existing data
-                      data.forEach((transport) => {
-                        const row = document.createElement("tr");
-                        const [lat, lng] = transport.geolocation
-                          .split(", ")
-                          .map((coord) => parseFloat(coord).toFixed(2));
-                        const roundedLocation = `${lat}, ${lng}`;
-                        row.innerHTML = `
-                                            <td>${transport.id}</td>
-                                            <td>${transport.wasteId}</td>
-                                            <td>${transport.userId}</td>
-                                            <td>${roundedLocation}</td>
-                                            <td>
-   
-                                            <button class="border-0 btn btn-lg btn-outline-light text-primary rounded-0 d-none d-md-block" onclick="deleteTransportData(${transport.id})" > Delete </button>
-                                               
-                                            </td>
-                                        `;
-                        tableBody.appendChild(row);
-                      });
-                    })
-                    .catch((error) =>
-                      console.error("Error loading transport data:", error)
-                    );
-                }
+  // Fetch transport data and display in the table
+  function loadTransportData() {
+    fetch("http://127.0.0.1:8081/api/v1/transport/all", {
+      method: "GET",
+      headers: headers,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const tableBody = document
+          .getElementById("transportDataTable")
+          .getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = ""; // Clear existing data
+        data.forEach((transport) => {
+          const row = document.createElement("tr");
+          const [lat, lng] = transport.geolocation
+            .split(", ")
+            .map((coord) => parseFloat(coord).toFixed(2));
+          const roundedLocation = `${lat}, ${lng}`;
+          row.innerHTML = `
+              <td>${transport.id}</td>
+              <td>${transport.wasteId}</td>
+              <td>${transport.userId}</td>
+              <td>${roundedLocation}</td>
+              <td>
+                <button class="border-0 btn btn-lg btn-outline-light text-primary rounded-0 d-none d-md-block" onclick="deleteTransportData(${transport.id})">Delete</button>
+              </td>
+          `;
+          tableBody.appendChild(row);
+        });
+      })
+      .catch((error) => console.error("Error loading transport data:", error));
+  }
+  console.log(headers);
+  // Delete transport data by ID
+  function deleteTransportData(transportId) {
+    fetch(`http://127.0.0.1:8081/api/v1/transport/delete?id=${transportId}`, {
+      method: "POST", // Use DELETE method for deletion
+      headers: headers,
+    })
+      .then((response) => response.text())
+      .then((message) => {
+        alert(message); // Display success message
+        loadTransportData(); // Refresh data after deletion
+      })
+      .catch((error) => console.error("Error deleting transport data:", error));
+  }
 
-                // Delete transport data by ID
-                function deleteTransportData(transportId) {
-                  fetch(
-                    `http://127.0.0.1:8081/api/v1/transport/delete?id=${transportId}`,
-                    {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        headers: headers,
-                      },
-                    }
-                  )
-                    .then((response) => response.text())
-                    .then((message) => {
-                      alert(message);
-                      loadTransportData(); // Refresh data after deletion
-                    })
-                    .catch((error) =>
-                      console.error("Error deleting transport data:", error)
-                    );
-                }
+  // Load transport data on page load
+  document.addEventListener("DOMContentLoaded", loadTransportData);
+</script>
 
-                // Load transport data on page load
-                document.addEventListener(
-                  "DOMContentLoaded",
-                  loadTransportData
-                );
-              </script>
+              
 
               <!-- content-wrapper ends -->
               <!-- partial:partials/_footer.html -->
