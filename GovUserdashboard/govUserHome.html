@@ -226,14 +226,11 @@
                 class="dropdown-menu dropdown-menu-right navbar-dropdown"
                 aria-labelledby="profileDropdown"
               >
-                <a
-                  class="dropdown-item"
-                  href="GovuserProfile.html"
-                >
+                <a class="dropdown-item" href="GovuserProfile.html">
                   <i class="ti-settings text-primary"></i>
                   Settings
                 </a>
-                <a class="dropdown-item" href="">
+                <a class="dropdown-item" onclick="handleLogout()">
                   <i class="ti-power-off text-primary"></i>
                   Logout
                 </a>
@@ -255,112 +252,76 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
           <ul class="nav">
             <li class="nav-item">
-              <a class="nav-link" href="home.html">
+              <a class="nav-link" href="appUserHome.html">
                 <i class="ti-shield menu-icon"></i>
-                <span class="menu-title">Dashboard</span>
+                <span class="menu-title">Users</span>
               </a>
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                data-bs-toggle="collapse"
-                href="#ui-basic"
-                aria-expanded="false"
-                aria-controls="ui-basic"
-              >
-                <i class="ti-palette menu-icon"></i>
-                <span class="menu-title">UI Elements</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="ui-basic">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item">
-                    <a class="nav-link" href="pages/ui-features/buttons.html"
-                      >Buttons</a
-                    >
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="pages/ui-features/typography.html"
-                      >Typography</a
-                    >
-                  </li>
-                </ul>
-              </div>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/pages/forms/basic_elements.html">
                 <i class="ti-layout-list-post menu-icon"></i>
-                <span class="menu-title">Form elements</span>
+                <span class="menu-title">user Uploads</span>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/pages/charts/chartjs.html">
                 <i class="ti-pie-chart menu-icon"></i>
-                <span class="menu-title">Charts</span>
+                <span class="menu-title">Daily schedule</span>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/pages/tables/basic-table.html">
                 <i class="ti-view-list-alt menu-icon"></i>
-                <span class="menu-title">Tables</span>
+                <span class="menu-title">Usage Report</span>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/pages/icons/themify.html">
                 <i class="ti-star menu-icon"></i>
-                <span class="menu-title">Icons</span>
+                <span class="menu-title">Payments</span>
               </a>
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                data-bs-toggle="collapse"
-                href="#auth"
-                aria-expanded="false"
-                aria-controls="auth"
-              >
-                <i class="ti-user menu-icon"></i>
-                <span class="menu-title">User Pages</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="auth">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item">
-                    <a class="nav-link" href="/pages/samples/login.html">
-                      Login
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/pages/samples/login-2.html">
-                      Login 2
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/pages/samples/register.html">
-                      Register
-                    </a>
-                  </li>
-                  <li class="nav-item" active>
-                    <a class="nav-link" href="/templates/waste-processing.html">
-                      Waste Processing
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/pages/samples/lock-screen.html">
-                      Lockscreen
-                    </a>
-                  </li>
-                </ul>
-              </div>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/documentation/documentation.html">
                 <i class="ti-write menu-icon"></i>
-                <span class="menu-title">Documentation</span>
+                <span class="menu-title">Offers Add +</span>
               </a>
             </li>
           </ul>
         </nav>
+        <script>
+          function handleLogout() {
+            const token = localStorage.getItem("token");
+
+            if (token) {
+              fetch("http://localhost:8082/user/logout", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ token: token }),
+              })
+                .then((response) => {
+                  if (response.ok) {
+                    // Clear all local storage
+                    localStorage.clear();
+
+                    // Redirect to the index page
+                    window.location.href = "/index.html";
+                  } else {
+                    console.error("Logout failed");
+                    // Handle any errors here
+                  }
+                })
+                .catch((error) => {
+                  console.error("An error occurred:", error);
+                });
+            } else {
+              console.error("No token found in local storage");
+              // Handle the case where the token is missing
+            }
+          }
+        </script>
         <!-- partial -->
         <div class="main-panel">
           <div class="content-wrapper">
@@ -564,91 +525,98 @@
                     );
                 });
             </script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const wasteDataTable = document
-      .getElementById("wasteDataTable")
-      .querySelector("tbody");
-    const searchCategory = document.getElementById("searchCategory");
-    const viewAllButton = document.getElementById("viewAllButton");
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                const wasteDataTable = document
+                  .getElementById("wasteDataTable")
+                  .querySelector("tbody");
+                const searchCategory =
+                  document.getElementById("searchCategory");
+                const viewAllButton = document.getElementById("viewAllButton");
 
-    // Retrieve token and username from local storage
-    const username = localStorage.getItem("username");
-    const token = localStorage.getItem("token");
+                // Retrieve token and username from local storage
+                const username = localStorage.getItem("username");
+                const token = localStorage.getItem("token");
 
-    // Initialize headers with the Authorization token
-    const headers = new Headers();
-    headers.append("Authorization", `Bearer ${token}`);
-    
-    // Fetch and Display All Waste Data
-    function fetchWasteData() {
-      fetch("http://127.0.0.1:8081/api/v1/transport", {
-        method: "GET",
-        headers: headers,
-      })
-        .then((response) => response.json())
-        .then((data) => populateTable(data))
-        .catch((error) => console.error("Error fetching data:", error));
-    }
+                // Initialize headers with the Authorization token
+                const headers = new Headers();
+                headers.append("Authorization", `Bearer ${token}`);
 
+                // Fetch and Display All Waste Data
+                function fetchWasteData() {
+                  fetch("http://127.0.0.1:8081/api/v1/transport", {
+                    method: "GET",
+                    headers: headers,
+                  })
+                    .then((response) => response.json())
+                    .then((data) => populateTable(data))
+                    .catch((error) =>
+                      console.error("Error fetching data:", error)
+                    );
+                }
 
-    // Populate Table with Data
-    function populateTable(data) {
-      wasteDataTable.innerHTML = ""; // Clear existing rows
-      data.forEach((waste) => {
-        const row = document.createElement("tr");
-        const [lat, lng] = waste.location.split(", ").map(coord => parseFloat(coord).toFixed(2));
-        const roundedLocation = `${lat}, ${lng}`;
-        row.innerHTML = `
+                // Populate Table with Data
+                function populateTable(data) {
+                  wasteDataTable.innerHTML = ""; // Clear existing rows
+                  data.forEach((waste) => {
+                    const row = document.createElement("tr");
+                    const [lat, lng] = waste.location
+                      .split(", ")
+                      .map((coord) => parseFloat(coord).toFixed(2));
+                    const roundedLocation = `${lat}, ${lng}`;
+                    row.innerHTML = `
           <td>${waste.id}</td>
           <td>${waste.category}</td>
           <td>${waste.weight}</td>
           <td>${roundedLocation}</td>
         `;
-        // Add click event to each row
-        row.addEventListener("click", () => {
-          // Set wasteId and geolocation in the hidden inputs
-          document.getElementById("wasteId").value = waste.id;
-          document.getElementById("geolocation").value = waste.location; // Assuming location is in "lat,lng" format
-          showLocationOnMap(waste.location);
-          loadDriversNearby(waste.location); // Load drivers based on location
+                    // Add click event to each row
+                    row.addEventListener("click", () => {
+                      // Set wasteId and geolocation in the hidden inputs
+                      document.getElementById("wasteId").value = waste.id;
+                      document.getElementById("geolocation").value =
+                        waste.location; // Assuming location is in "lat,lng" format
+                      showLocationOnMap(waste.location);
+                      loadDriversNearby(waste.location); // Load drivers based on location
 
-          // Debugging logs
-          console.log("Waste ID set:", waste.id);
-          console.log("Geolocation set:", waste.location);
-        });
-        wasteDataTable.appendChild(row);
-      });
-    }
+                      // Debugging logs
+                      console.log("Waste ID set:", waste.id);
+                      console.log("Geolocation set:", waste.location);
+                    });
+                    wasteDataTable.appendChild(row);
+                  });
+                }
 
-    // Fetch Data by Category
-    searchCategory.addEventListener("input", function () {
-      const category = searchCategory.value;
-      if (category) {
-        fetch(
-          `http://127.0.0.1:8081/api/v1/transport/findCategory?category=${encodeURIComponent(
-            category
-          )}`,
-          {
-            method: "POST",
-            headers: headers,
-          }
-        )
-          .then((response) => response.json())
-          .then((data) => populateTable(data))
-          .catch((error) => console.error("Error fetching data:", error));
-      } else {
-        fetchWasteData(); // Show all if search is cleared
-      }
-    });
+                // Fetch Data by Category
+                searchCategory.addEventListener("input", function () {
+                  const category = searchCategory.value;
+                  if (category) {
+                    fetch(
+                      `http://127.0.0.1:8081/api/v1/transport/findCategory?category=${encodeURIComponent(
+                        category
+                      )}`,
+                      {
+                        method: "POST",
+                        headers: headers,
+                      }
+                    )
+                      .then((response) => response.json())
+                      .then((data) => populateTable(data))
+                      .catch((error) =>
+                        console.error("Error fetching data:", error)
+                      );
+                  } else {
+                    fetchWasteData(); // Show all if search is cleared
+                  }
+                });
 
-    // View All Button Event
-    viewAllButton.addEventListener("click", fetchWasteData);
+                // View All Button Event
+                viewAllButton.addEventListener("click", fetchWasteData);
 
-    // Fetch all data on page load
-    fetchWasteData();
-  });
-</script>
+                // Fetch all data on page load
+                fetchWasteData();
+              });
+            </script>
 
             <div class="row">
               <div class="col-md-13 grid-margin stretch-card">
@@ -675,18 +643,17 @@
                 </div>
               </div>
               <script>
-               const username = localStorage.getItem('username');
-                                            
+                const username = localStorage.getItem("username");
 
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem("token");
                 const headers = new Headers();
-                 headers.append('Authorization', `Bearer ${token}`);
+                headers.append("Authorization", `Bearer ${token}`);
                 // Fetch transport data and display in the table
                 function loadTransportData() {
                   fetch("http://127.0.0.1:8081/api/v1/transport/all", {
-                        method: 'GET',
-                        headers: headers
-                    })
+                    method: "GET",
+                    headers: headers,
+                  })
                     .then((response) => response.json())
                     .then((data) => {
                       const tableBody = document
@@ -695,7 +662,9 @@
                       tableBody.innerHTML = ""; // Clear existing data
                       data.forEach((transport) => {
                         const row = document.createElement("tr");
-                        const [lat, lng] = transport.geolocation.split(", ").map(coord => parseFloat(coord).toFixed(2));
+                        const [lat, lng] = transport.geolocation
+                          .split(", ")
+                          .map((coord) => parseFloat(coord).toFixed(2));
                         const roundedLocation = `${lat}, ${lng}`;
                         row.innerHTML = `
                                             <td>${transport.id}</td>
@@ -715,8 +684,6 @@
                       console.error("Error loading transport data:", error)
                     );
                 }
-                
-
 
                 // Delete transport data by ID
                 function deleteTransportData(transportId) {
@@ -726,7 +693,7 @@
                       method: "POST",
                       headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
-                        "headers" : headers
+                        headers: headers,
                       },
                     }
                   )
@@ -746,24 +713,34 @@
                   loadTransportData
                 );
               </script>
-             
-          <!-- content-wrapper ends -->
-            <!-- partial:partials/_footer.html -->
-            <footer class="footer">
-              <div class="d-sm-flex justify-content-center justify-content-sm-between">
-          <span class="text-center text-muted text-sm-left d-block d-sm-inline-block">Copyright © <a
-                  href="" target="_blank">wastemanage.lk </a>2024</span>
-                  <span class="float-none mt-1 text-center float-sm-right d-block mt-sm-0">Only the best <a
-                          href="" target="_blank"> Waste Collect</a> Processing</span>
-              </div>
-          </footer>
-        </div>
-        <!-- main-panel ends -->
-      </div>
-      <!-- page-body-wrapper ends -->
-    </div>
-    <!-- container-scroller -->
 
+              <!-- content-wrapper ends -->
+              <!-- partial:partials/_footer.html -->
+              <footer class="footer">
+                <div
+                  class="d-sm-flex justify-content-center justify-content-sm-between"
+                >
+                  <span
+                    class="text-center text-muted text-sm-left d-block d-sm-inline-block"
+                    >Copyright ©
+                    <a href="" target="_blank">wastemanage.lk </a>2024</span
+                  >
+                  <span
+                    class="float-none mt-1 text-center float-sm-right d-block mt-sm-0"
+                    >Only the best
+                    <a href="" target="_blank"> Waste Collect</a>
+                    Processing</span
+                  >
+                </div>
+              </footer>
+            </div>
+            <!-- main-panel ends -->
+          </div>
+          <!-- page-body-wrapper ends -->
+        </div>
+        <!-- container-scroller -->
+      </div>
+    </div>
     <!-- plugins:js -->
     <script src="vendors/base/vendor.bundle.base.js"></script>
     <!-- endinject -->
