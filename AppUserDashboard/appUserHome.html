@@ -345,6 +345,8 @@
                     </div>
                 </div>
                 <script>
+                    const username = localStorage.getItem('username');
+                    const token = localStorage.getItem('token');
                     function getCurrentLocation() {
                         if (navigator.geolocation) {
                             navigator.geolocation.getCurrentPosition(function(position) {
@@ -418,9 +420,13 @@
 
                             progressBar.style.display = 'block';
                             statusMessage.style.display = 'none';
-
+                            
+                            const headers = new Headers();
+                            headers.append('Authorization', `Bearer ${token}`);
+                             
                             fetch('http://localhost:8080/api/v1/upload', {
                                 method: 'POST',
+                                headers: headers,
                                 body: formData
                             })
                                 .then(response => response.text())
@@ -527,9 +533,20 @@
                     <script>
                         document.addEventListener('DOMContentLoaded', () => {
                             const tableBody = document.querySelector('#wasteDataTable tbody');
+                            // Retrieve token and username from localStorage
+                            const token = localStorage.getItem('token');
+                            const username = localStorage.getItem('username');
+                        
+                            // Create the headers object
+                            const headers = new Headers();
+                            headers.append('Authorization', `Bearer ${token}`);
+                            console.log("token is ",token);
                         
                             // Fetch waste data
-                            fetch('http://127.0.0.1:8080/api/v1/waste/user?userId=1')  // Adjust userId as needed
+                            fetch(`http://127.0.0.1:8080/api/v1/waste/user?userId=${username}`, {
+                                method: 'GET',
+                                headers: headers
+                            })
                                 .then(response => response.json())
                                 .then(data => {
                                     // Populate table
@@ -542,9 +559,7 @@
                                             <td>${record.weight}</td>
                                             <td>${record.location}</td>
                                             <td>
-                                                                                  
-                                      
-                                                <button class="border-0 btn btn-lg btn-outline-light text-primary rounded-0 d-none d-md-block"onclick="deleteRecord(${record.id})">Delete</button>
+                                                <button class="border-0 btn btn-lg btn-outline-light text-primary rounded-0 d-none d-md-block" onclick="deleteRecord(${record.id})">Delete</button>
                                             </td>
                                         `;
                                         tableBody.appendChild(row);
@@ -552,11 +567,16 @@
                                 })
                                 .catch(error => console.error('Error fetching data:', error));
                         });
-                        
+                     
+               
+                      
+                        const headers = new Headers();
+                        headers.append('Authorization', `Bearer ${token}`);
                         // Function to delete a record
                         function deleteRecord(wasteId) {
                             fetch(`http://127.0.0.1:8080/api/v1/waste/delete/${wasteId}`, {
                                 method: 'DELETE',
+                                headers: headers
                             })
                             .then(response => {
                                 if (response.ok) {
@@ -596,11 +616,19 @@
 
                                     <script>
                                         document.addEventListener('DOMContentLoaded', () => {
-                                            const userId = 1; // Replace with dynamic userId if needed
+                                         
+                                            const username = localStorage.getItem('username');
+                                            
                                             const countDisplay = document.getElementById('countDisplay');
-                                        
+                                            const token = localStorage.getItem('token');
+                                            const headers = new Headers();
+                                            headers.append('Authorization', `Bearer ${token}`);
+                                            
                                             // Fetch count data
-                                            fetch(`http://localhost:8080/api/v1/waste/count/by-user/${userId}`)
+                                            fetch(`http://localhost:8080/api/v1/waste/count/by-user?userId=${username}`, {
+                                                        method: 'GET',
+                                                        headers: headers
+                                                    })
                                                 .then(response => response.text())
                                                 .then(data => {
                                                     // Assuming the data is in the format "Count of waste data for userId X: Y"
@@ -624,78 +652,104 @@
                                                 <div class="mb-3 table-responsive mb-md-0">
                                                     <table class="table table-borderless report-table">
                                                         <tr>
-                                                            <td class="text-muted">Illinois</td>
+                                                            <td class="text-muted">Cardboard</td>
                                                             <td class="px-0 w-100">
                                                                 <div class="mx-4 progress progress-md">
-                                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 70%"
+                                                                    <div id="progress-cardboard" class="progress-bar bg-primary" role="progressbar" style="width: 70%"
                                                                          aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <h5 class="mb-0 font-weight-bold">524</h5>
+                                                                <h5 id="count-cardboard" class="mb-0 font-weight-bold">524</h5>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td class="text-muted">Washington</td>
+                                                            <td class="text-muted">Glass</td>
                                                             <td class="px-0 w-100">
                                                                 <div class="mx-4 progress progress-md">
-                                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 30%"
+                                                                    <div id="progress-glass" class="progress-bar bg-primary" role="progressbar" style="width: 30%"
                                                                          aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <h5 class="mb-0 font-weight-bold">722</h5>
+                                                                <h5 id="count-glass" class="mb-0 font-weight-bold">722</h5>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td class="text-muted">Mississippi</td>
+                                                            <td class="text-muted">Metal</td>
                                                             <td class="px-0 w-100">
                                                                 <div class="mx-4 progress progress-md">
-                                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 95%"
+                                                                    <div id="progress-metal" class="progress-bar bg-primary" role="progressbar" style="width: 95%"
                                                                          aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <h5 class="mb-0 font-weight-bold">173</h5>
+                                                                <h5 id="count-metal" class="mb-0 font-weight-bold">173</h5>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td class="text-muted">California</td>
+                                                            <td class="text-muted">Paper</td>
                                                             <td class="px-0 w-100">
                                                                 <div class="mx-4 progress progress-md">
-                                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 60%"
+                                                                    <div id="progress-paper" class="progress-bar bg-primary" role="progressbar" style="width: 60%"
                                                                          aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <h5 class="mb-0 font-weight-bold">945</h5>
+                                                                <h5 id="count-paper" class="mb-0 font-weight-bold">945</h5>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td class="text-muted">Maryland</td>
+                                                            <td class="text-muted">Plastic</td>
                                                             <td class="px-0 w-100">
                                                                 <div class="mx-4 progress progress-md">
-                                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 40%"
+                                                                    <div id="progress-plastic" class="progress-bar bg-primary" role="progressbar" style="width: 40%"
                                                                          aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <h5 class="mb-0 font-weight-bold">553</h5>
+                                                                <h5 id="count-plastic" class="mb-0 font-weight-bold">553</h5>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td class="text-muted">Alaska</td>
+                                                            <td class="text-muted">Trash</td>
                                                             <td class="px-0 w-100">
                                                                 <div class="mx-4 progress progress-md">
-                                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 75%"
+                                                                    <div id="progress-trash" class="progress-bar bg-primary" role="progressbar" style="width: 75%"
                                                                          aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <h5 class="mb-0 font-weight-bold">912</h5>
+                                                                <h5 id="count-trash" class="mb-0 font-weight-bold">912</h5>
                                                             </td>
                                                         </tr>
                                                     </table>
+
+                                                    <script>
+                                                        document.addEventListener('DOMContentLoaded', () => {
+                                                                const categories = ['Cardboard', 'Glass', 'Metal', 'Paper', 'Plastic', 'Trash'];
+                                                                
+                                                                categories.forEach(category => {
+                                                                    fetch(`http://127.0.0.1:8080/api/v1/waste/count/by-category/${category}`)
+                                                                        .then(response => response.text())
+                                                                        .then(data => {
+                                                                            // Parse the count value from the response text
+                                                                            const count = parseInt(data.match(/\d+/)[0], 10);
+                                                                            
+                                                                            // Update the count and progress bar width
+                                                                            document.getElementById(`count-${category.toLowerCase()}`).innerText = count;
+
+                                                                            // Assuming the max count is 1000 for percentage calculation, adjust if needed
+                                                                            const progressPercentage = (count / 1000) * 100; 
+                                                                            document.getElementById(`progress-${category.toLowerCase()}`).style.width = `${progressPercentage}%`;
+                                                                            document.getElementById(`progress-${category.toLowerCase()}`).setAttribute('aria-valuenow', progressPercentage);
+                                                                        })
+                                                                        .catch(error => console.error(`Error fetching count for category ${category}:`, error));
+                                                                });
+                                                            });
+
+                                                    </script>
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -711,9 +765,9 @@
             <footer class="footer">
                 <div class="d-sm-flex justify-content-center justify-content-sm-between">
             <span class="text-center text-muted text-sm-left d-block d-sm-inline-block">Copyright © <a
-                    href="https://www.bootstrapdash.com/" target="_blank">bootstrapdash.com </a>2021</span>
+                    href="" target="_blank">wastemanage.lk </a>2024</span>
                     <span class="float-none mt-1 text-center float-sm-right d-block mt-sm-0">Only the best <a
-                            href="https://www.bootstrapdash.com/" target="_blank"> Bootstrap dashboard </a> templates</span>
+                            href="" target="_blank"> Waste Collect</a> Processing</span>
                 </div>
             </footer>
             <!-- partial -->
