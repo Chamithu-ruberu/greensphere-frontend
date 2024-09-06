@@ -309,7 +309,7 @@
     
       console.log(token1);
       function fetchUserPoints() {
-          fetch('http://127.0.0.1:8091/api/v1/bills/get-user-points',
+          fetch('http://127.0.0.1:8080/api/v1/bills/get-user-points',
             {
               method:"GET",
               headers : header
@@ -326,7 +326,7 @@
               })
               .catch(error => {
                   console.error('Error fetching user points:', error);
-                  document.getElementById('userPoints').textContent = 'Error fetching points';
+                  document.getElementById('userPoints').textContent = 'Your points : 0';
               });
       }
 

@@ -59,7 +59,7 @@
     const name = document.getElementById("name").value;
     const city = document.getElementById("city").value;
     const password = document.getElementById("password").value;
-    const mobile = document.getElementById("mobile").value;
+    const mobile = localStorage.getItem("mobile");
 
     const payload = {
       username,
