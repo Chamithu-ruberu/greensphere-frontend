@@ -101,61 +101,14 @@
                 href="#"
                 data-bs-toggle="dropdown"
               >
-                <i class="mx-0 ti-email"></i>
+              <i id="nameDisplay"></i>
+              <script>
+                  const name = localStorage.getItem("fullName");
+                  document.getElementById("nameDisplay").textContent = 'Hi '+ name || 'Guest'; // Default to 'Guest' if name is null
+              </script>
+              
               </a>
-              <div
-                class="dropdown-menu dropdown-menu-right navbar-dropdown"
-                aria-labelledby="messageDropdown"
-              >
-                <p class="float-left mb-0 font-weight-normal dropdown-header">
-                  Messages
-                </p>
-                <a class="dropdown-item">
-                  <div class="item-thumbnail">
-                    <img
-                      src="https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
-                      alt="image"
-                      class="profile-pic"
-                    />
-                  </div>
-                  <div class="flex-grow item-content">
-                    <h6 class="ellipsis font-weight-normal">David Grey</h6>
-                    <p class="mb-0 font-weight-light small-text text-muted">
-                      The meeting is cancelled
-                    </p>
-                  </div>
-                </a>
-                <a class="dropdown-item">
-                  <div class="item-thumbnail">
-                    <img
-                      src="https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
-                      alt="image"
-                      class="profile-pic"
-                    />
-                  </div>
-                  <div class="flex-grow item-content">
-                    <h6 class="ellipsis font-weight-normal">Tim Cook</h6>
-                    <p class="mb-0 font-weight-light small-text text-muted">
-                      New product launch
-                    </p>
-                  </div>
-                </a>
-                <a class="dropdown-item">
-                  <div class="item-thumbnail">
-                    <img
-                      src="https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
-                      alt="image"
-                      class="profile-pic"
-                    />
-                  </div>
-                  <div class="flex-grow item-content">
-                    <h6 class="ellipsis font-weight-normal">Johnson</h6>
-                    <p class="mb-0 font-weight-light small-text text-muted">
-                      Upcoming board meeting
-                    </p>
-                  </div>
-                </a>
-              </div>
+       
             </li>
             
             </li>
@@ -284,19 +237,29 @@
                       Greensphere Waste Collection Service
                     </h4>
                   </div>
-                  <div id="userPointsContainer">
+                  <div id="userPointsContainer" class="flex flex-row">
+                    <p>Your points :</p>
                     <p id="userPoints">Fetching user points...</p>
                 </div>
                 <style>
+                  .flex {
+    display: flex; /* Ensures the container uses Flexbox */
+}
+
+.flex-row {
+    flex-direction: row; /* Aligns the children in a row */
+    align-items: center; /* Aligns items vertically in the center */
+}
+
     
                   #userPoints {
                       font-size: 1.2rem;
                       font-weight: bold;
-                      color: #007bff;
-                      border: 2px solid #007bff;
+                      color: rgb(19, 173, 14);
+                 
                       border-radius: 5px;
                       padding: 5px 5px;
-                      background-color: #ffffff;
+                     
                       display: inline-block;
                   }
               </style>
@@ -306,10 +269,10 @@
       const token1 = localStorage.getItem("token");
       const header = new Headers();
       header.append("Authorization", `Bearer ${token1}`);
-    
+     
       console.log(token1);
       function fetchUserPoints() {
-          fetch('http://127.0.0.1:8080/api/v1/bills/get-user-points',
+          fetch('http://127.0.0.1:8091/api/v1/bills/get-user-points',
             {
               method:"GET",
               headers : header
@@ -319,7 +282,8 @@
               .then(points => {
                   const pointsElement = document.getElementById('userPoints');
                   if (points !== null) {
-                      pointsElement.textContent = `Your points: ${points}`;
+
+                      pointsElement.textContent = `${points}`;
                   } else {
                       pointsElement.textContent = 'Points not found';
                   }
