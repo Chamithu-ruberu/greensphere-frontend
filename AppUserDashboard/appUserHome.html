@@ -113,7 +113,7 @@
                 <a class="dropdown-item">
                   <div class="item-thumbnail">
                     <img
-                      src="images/faces/face4.jpg"
+                      src="https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
                       alt="image"
                       class="profile-pic"
                     />
@@ -128,7 +128,7 @@
                 <a class="dropdown-item">
                   <div class="item-thumbnail">
                     <img
-                      src="images/faces/face2.jpg"
+                      src="https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
                       alt="image"
                       class="profile-pic"
                     />
@@ -143,7 +143,7 @@
                 <a class="dropdown-item">
                   <div class="item-thumbnail">
                     <img
-                      src="images/faces/face3.jpg"
+                      src="https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
                       alt="image"
                       class="profile-pic"
                     />
@@ -166,7 +166,7 @@
                 data-bs-toggle="dropdown"
                 id="profileDropdown"
               >
-                <img src="images/faces/face28.jpg" alt="profile" />
+                <img src="https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg" alt="profile"  />
               </a>
               <div
                 class="dropdown-menu dropdown-menu-right navbar-dropdown"
@@ -203,42 +203,41 @@
                 <span class="menu-title">Dashboard</span>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/pages/forms/basic_elements.html">
-                <i class="ti-layout-list-post menu-icon"></i>
-                <span class="menu-title">Uploads</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/pages/charts/chartjs.html">
-                <i class="ti-pie-chart menu-icon"></i>
-                <span class="menu-title">Earn Points</span>
-              </a>
-            </li>
+
             <li class="nav-item">
               <a class="nav-link" href="/AppUserDashboard/AppUserBilling.html">
                 <i class="ti-view-list-alt menu-icon"></i>
                 <span class="menu-title">Checkout</span>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/pages/icons/themify.html">
-                <i class="ti-star menu-icon"></i>
-                <span class="menu-title">Payments</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" data-bs-toggle="collapse" href="#auth">
-                <i class="ti-user menu-icon"></i>
-                <span class="menu-title">Invite Friends +</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/documentation/documentation.html">
-                <i class="ti-write menu-icon"></i>
-                <span class="menu-title">Offers</span>
-              </a>
-            </li>
+
+     
+              <li class="nav-item">
+                  <a id="copyUrlLink" class="nav-link" data-bs-toggle="collapse" href="#auth">
+                      <i class="ti-user menu-icon"></i>
+                      <span class="menu-title">Invite Friends +</span>
+                  </a>
+              </li>
+        
+      
+          <script>
+              // Function to copy current URL to clipboard
+              function copyCurrentUrl() {
+                  const url = window.location.href;
+                  navigator.clipboard.writeText(url).then(() => {
+                      alert('URL copied to clipboard!');
+                  }).catch(err => {
+                      console.error('Failed to copy URL: ', err);
+                  });
+              }
+      
+              // Attach event listener to the link
+              document.getElementById('copyUrlLink').addEventListener('click', function(event) {
+                  event.preventDefault(); // Prevent the default action
+                  copyCurrentUrl();
+              });
+          </script>
+
           </ul>
         </nav>
         <script>
@@ -285,6 +284,56 @@
                       Greensphere Waste Collection Service
                     </h4>
                   </div>
+                  <div id="userPointsContainer">
+                    <p id="userPoints">Fetching user points...</p>
+                </div>
+                <style>
+    
+                  #userPoints {
+                      font-size: 1.2rem;
+                      font-weight: bold;
+                      color: #007bff;
+                      border: 2px solid #007bff;
+                      border-radius: 5px;
+                      padding: 5px 5px;
+                      background-color: #ffffff;
+                      display: inline-block;
+                  }
+              </style>
+
+    <script>
+      // Function to fetch and display user points
+      const token1 = localStorage.getItem("token");
+      const header = new Headers();
+      header.append("Authorization", `Bearer ${token1}`);
+    
+      console.log(token1);
+      function fetchUserPoints() {
+          fetch('http://127.0.0.1:8091/api/v1/bills/get-user-points',
+            {
+              method:"GET",
+              headers : header
+            }
+          )
+              .then(response => response.json())
+              .then(points => {
+                  const pointsElement = document.getElementById('userPoints');
+                  if (points !== null) {
+                      pointsElement.textContent = `Your points: ${points}`;
+                  } else {
+                      pointsElement.textContent = 'Points not found';
+                  }
+              })
+              .catch(error => {
+                  console.error('Error fetching user points:', error);
+                  document.getElementById('userPoints').textContent = 'Error fetching points';
+              });
+      }
+
+      // Call the function when the page loads
+      document.addEventListener('DOMContentLoaded', fetchUserPoints);
+  </script>
+
                   <div>
                     <button
                       type="button"
